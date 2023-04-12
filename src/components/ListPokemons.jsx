@@ -1,6 +1,7 @@
 import React from "react";
 import InputSearch from "./InputSearch";
-import { TableContainer,
+import {
+    TableContainer,
     Table,
     TableCaption,
     Thead,
@@ -10,8 +11,9 @@ import { TableContainer,
     Tbody,
     Button,
     Stack,
- } from "@chakra-ui/react";
-
+    Box,
+    Heading
+} from "@chakra-ui/react";
 
 export default function ListPokemons({ pokemons, filtro, onchange, showDetail }) {
 
@@ -33,11 +35,12 @@ export default function ListPokemons({ pokemons, filtro, onchange, showDetail })
         );
     });
 
-
-
     return (
 
         <Stack>
+            <Box bg='tomato' w='100%' p={4} mt={4} color='white' borderRadius="5px">
+                <Heading>List of pokemons</Heading>
+            </Box>
             <InputSearch filtro={filtro} onchange={onchange} />
             <TableContainer>
                 <Table variant='simple' size="sm">
