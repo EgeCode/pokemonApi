@@ -1,133 +1,129 @@
 import React, { useState, useEffect } from 'react'
+import ListPokemons from './components/ListPokemons';
 import {
     ChakraProvider,
-    Input,
     Stack,
     Container,
     Heading,
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-    Link
+    Text,
+    Card,
+    CardBody,
+    CardFooter,
+    Button,
+    Accordion,
+    AccordionItem,
+    AccordionButton,
+    AccordionPanel,
+    AccordionIcon,
+    Box,
+    Image
+
 } from '@chakra-ui/react'
 
 
 
-function InputSearch({ filtro, onchange }) {
-    return (
-        <>
-            <label htmlFor="filter">Buscar</label>
-            <Input id='filter' placeholder='Escribe el nombre de tu pokemon aquí' my={3} value={filtro} onChange={(e) => onchange(e.target.value)} />
-        </>
-    )
-}
-
-function ListPokemons({ pokemons, filtro, onchange }) {
-
-    const rows = [];
-    
-    // pokemons.forEach((pokemon,index) => {
-    //     if (pokemon.name.toLowerCase().indexOf(filtro.toLowerCase()) === -1) {
-    //         return;
-    //     }
-
-    //     rows.push(
-    //         <Tr key={index}>
-    //             <Td>{index +1}</Td>
-    //             <Td>{pokemon.name.toUpperCase()}</Td>
-    //         </Tr>,
-    //     );
-    // });
-
-    return (
-        
-        <Stack>
-            <Heading>Busca</Heading>
-            <InputSearch filtro={filtro} onchange={onchange} />
-            <TableContainer>
-                <Table variant='simple'>
-                    <TableCaption>Listado de Pokemons 2023</TableCaption>
-                    <Thead>
-                        <Tr>
-                            <Th>#</Th>
-                            <Th>Nombre</Th>
-                            <Th>Seleccionar</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {rows}
-                    </Tbody>
-                </Table>
-            </TableContainer>
-        </Stack>
-    )
-}
 
 
 function App() {
 
+    //estados
+    const [pokemon, setPokemon] = useState([]);
     const [pokemons, setPokemons] = useState([]);
-    const [filtro, setFiltro] = useState('')
-    const fetchPokemons = () =>{
+    const [filtro, setFiltro] = useState('');
 
-        fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
-        .then(response => {
-            return response.json()
-        })
-        .then(data => {
-            setPokemons(data)
-          })
+    //API general
+    const API = 'https://pokeapi.co/api/v2/pokemon';
+
+    //get pokemons from API fuction
+    const fetchPokemons = async () => {
+        const response = await fetch(API + '?limit=100000&offset=0')
+        const data = await response.json()
+
+        setPokemons(data.results)
+
     }
 
+    const showDetail = async (idPokemon) => {
+
+        const response = await fetch(API + '/' + idPokemon)
+        const data = await response.json()
+
+        setPokemon(data)
+    }
+
+    //use hook useEffect
     useEffect(() => {
         fetchPokemons()
-      }, [])
-
-
-    // const pokemons = [
-    //     {
-    //         name: "bulbasaur",
-    //         url: "https://pokeapi.co/api/v2/pokemon/1/"
-    //     },
-    //     {
-    //         name: "ivysaur",
-    //         url: "https://pokeapi.co/api/v2/pokemon/2/"
-    //     },
-    //     {
-    //         name: "venusaur",
-    //         url: "https://pokeapi.co/api/v2/pokemon/3/"
-    //     },
-    //     {
-    //         name: "charmander",
-    //         url: "https://pokeapi.co/api/v2/pokemon/4/"
-    //     },
-    //     {
-    //         name: "charmeleon",
-    //         url: "https://pokeapi.co/api/v2/pokemon/5/"
-    //     },
-    //     {
-    //         name: "charizard",
-    //         url: "https://pokeapi.co/api/v2/pokemon/6/"
-    //     },
-    //     {
-    //         name: "squirtle",
-    //         url: "https://pokeapi.co/api/v2/pokemon/7/"
-    //     }
-    // ];
-
-    
-
+    }, [])
 
     return (
 
         <ChakraProvider>
-            <Container maxW='1200px'>
-                <ListPokemons pokemons={pokemons} filtro={filtro} onchange={setFiltro} />
+            <Container maxW='720px'>
+                {pokemon == '' ?
+                    <>
+                        <Box bg='tomato' w='100%' p={4} mt={4} color='white' borderRadius="5px">
+                            <Heading>List of pokemons</Heading>
+                        </Box>
+                        <ListPokemons pokemons={pokemons} filtro={filtro} onchange={setFiltro} showDetail={showDetail} />
+                    </>
+                    : <>
+                        <Box bg='tomato' w='100%' p={4} mt={4} color='white' borderRadius="5px">
+                            <Heading>Details</Heading>
+                        </Box>
+                        <Card p="20px" mt="25px">
+                            <Heading size='md'>{'#' + pokemon.id + ' .- ' + pokemon.name.toUpperCase()}</Heading>
+                            <Stack direction="row">
+                                <Image
+                                    src={pokemon.sprites.front_default}
+                                    alt={pokemon.name}
+                                />
+
+                                <Image
+                                    src={pokemon.sprites.back_default}
+                                    alt={pokemon.name}
+                                />
+                            </Stack>
+
+                            <Stack>
+                                <CardBody>
+                                    <Text>
+                                        <strong>Type: </strong> {pokemon.types[0].type.name.toUpperCase()}
+                                    </Text>
+                                    <Text>
+                                        <strong>Heigth: </strong> {pokemon.height}
+                                    </Text>
+                                    <Text>
+                                        <strong>Weight: </strong> {pokemon.weight}
+                                    </Text>
+                                    <Accordion allowMultiple>
+                                        <AccordionItem>
+                                            <AccordionButton>
+                                                <Box as="span" flex='1' textAlign='left'>
+                                                    <strong>Abilities: </strong> {pokemon.abilities.length}
+                                                </Box>
+                                                <AccordionIcon />
+
+                                            </AccordionButton>
+                                            <AccordionPanel>
+                                                <ul>
+                                                    {pokemon.abilities.map((a) =>
+                                                        <li>{a.ability.name.toUpperCase()}</li>
+                                                    )}
+                                                </ul>
+                                            </AccordionPanel>
+                                        </AccordionItem>
+                                    </Accordion>
+                                </CardBody>
+                                <CardFooter>
+                                    <Button variant='solid' colorScheme='blue' onClick={() => setPokemon('')}>
+                                        {"<<"} Atras
+                                    </Button>
+                                </CardFooter>
+                            </Stack>
+                        </Card>
+                    </>}
+
             </Container>
         </ChakraProvider>
 
