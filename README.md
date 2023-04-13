@@ -18,3 +18,6 @@
 ## Construido con 🛠️
 [ReactJs](https://es.reactjs.org/) <br/>
 [Chakra UI](https://chakra-ui.com/) 
+
+## Autor ✒️
+Ing. Eduardo Gutierrez 
