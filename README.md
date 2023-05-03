@@ -20,4 +20,4 @@
 [Chakra UI](https://chakra-ui.com/) 
 
 ## Autor ✒️
-Ing. Eduardo Gutierrez 
+Eduardo Gutierrez 
